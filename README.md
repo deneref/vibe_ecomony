@@ -1,1 +1,1 @@
-# vibe_ecomony
+# vibe_economy
