@@ -1,28 +1,13 @@
 from pprint import pprint
 
-import httplib2
-import apiclient.discovery
-from oauth2client.service_account import ServiceAccountCredentials
+import SheetReader as sr
+import SheetNames
 
 
-# Файл, полученный в Google Developer Console
-CREDENTIALS_FILE = 'credentials.json'
-# ID Google Sheets документа (можно взять из его URL)
-spreadsheet_id = '18UNzxVBTrOM3JYKR5YMun_6MJ0sUQ62vrJG9Rv6qqe0'
+sheetReader = sr.SheetReader()
+sn = SheetNames.SheetNames
 
-# Авторизуемся и получаем service — экземпляр доступа к API
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    CREDENTIALS_FILE,
-    ['https://www.googleapis.com/auth/spreadsheets'])
-httpAuth = credentials.authorize(httplib2.Http())
-service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-
-# Пример чтения файла
-values = service.spreadsheets().values().get(
-    spreadsheetId=spreadsheet_id,
-    range='Общий расход',
-    majorDimension='COLUMNS'
-).execute()
+values = sheetReader.readSheet(sn.totalSpending)
 pprint(values)
 
 '''

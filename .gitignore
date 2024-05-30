@@ -1,3 +1,4 @@
-secrets/*
+secrets
 .DS_Store
 quickstart.py
+__pycache__
