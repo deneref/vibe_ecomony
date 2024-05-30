@@ -7,3 +7,4 @@ class SheetNames(StrEnum):
     capEx = 'Единоразовые расходы'
     supply = 'Размер поставки'
     investments = 'Источники инвестирования'
+    result = 'final'

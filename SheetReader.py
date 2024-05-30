@@ -1,31 +1,23 @@
-import httplib2
-import apiclient.discovery
-from oauth2client.service_account import ServiceAccountCredentials
-from pandas import DataFrame
+import pandas as pd
+from gspread_dataframe import get_as_dataframe, set_with_dataframe
 
 
 class SheetReader():
-    def __init__(self):
+    def __init__(self, gc, sh):
+        self.gc = gc
+        self.sh = sh  # Opened worksheet
 
-        self.cred_path = 'secrets/credentials.json'
-        self.spreadsheet_id = '18UNzxVBTrOM3JYKR5YMun_6MJ0sUQ62vrJG9Rv6qqe0'
+    def readSheet(self, sheet_name: str) -> pd.DataFrame:
+        worksheet = self.sh.worksheet(sheet_name)
 
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            self.cred_path,
-            ['https://www.googleapis.com/auth/spreadsheets'])
-        httpAuth = credentials.authorize(httplib2.Http())
+        dataframe = pd.DataFrame(worksheet.get_all_records())
 
-        self.service = apiclient.discovery.build('sheets', 'v4', http=httpAuth)
+        return dataframe
 
-    def readSheet(self, sheet_name: str) -> DataFrame:
-        rows = self.service.spreadsheets().values().get(
-            spreadsheetId=self.spreadsheet_id,
-            range=sheet_name,
-            majorDimension='ROWS'
-        ).execute()
+    def readSheet_test(self, sheet_name: str) -> pd.DataFrame:
+        worksheet = self.sh.worksheet(sheet_name)
 
-        data = rows.get('values')
+        dataframe = get_as_dataframe(
+            worksheet, usecols=[0, 1, 2], skip_blank_lines=True).dropna()
 
-        df = DataFrame(data[1:], columns=[
-            'supply_id', 'category', 'item_amt'])
-        return df
+        return dataframe
