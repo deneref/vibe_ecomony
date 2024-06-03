@@ -2,9 +2,10 @@ from enum import StrEnum
 
 
 class SheetNames(StrEnum):
-    totalSpending = 'Общий расход'
-    opEx = 'Затраты'  # операционные расходы
+    allocatedSpending = 'Аллоцированный расход'
+    opEx = 'Операционные расходы'
     capEx = 'Единоразовые расходы'
     supply = 'Размер поставки'
     investments = 'Источники инвестирования'
-    result = 'final'
+    result = 'final'  # тестовый sheet
+    total_product_cost = 'total_product_cost'  # тестовый

@@ -1,12 +1,13 @@
 from pprint import pprint
 
-from SheetReader import SheetReader
-from SheetWriter import SheetWriter
+from ApiClient.SheetReader import SheetReader
+from ApiClient.SheetWriter import SheetWriter
 import SheetNames
-import ApiService
+from ApiClient.ApiService import ApiService
+import CoreAnalyst as ca
 
 
-ApiService = ApiService.ApiService()
+ApiService = ApiService()
 
 sheetReader = SheetReader(
     ApiService.getGcService(), ApiService.getWorksheet())
@@ -15,9 +16,21 @@ sheetWriter = SheetWriter(
     ApiService.getGcService(), ApiService.getWorksheet())
 
 sn = SheetNames.SheetNames
+analyst = ca.CoreAnalyst()
 
-totalSpending = sheetReader.readSheet_test(sn.totalSpending)
-# opEx = sheetReader.readSheet(sn.opEx)
-# supply = sheetReader.readSheet(sn.supply)
+opEx = sheetReader.readSheet(sn.opEx)
+opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
+print(opEx)
 
-sheetWriter.writeToSheet(sn.result, totalSpending)
+supply = sheetReader.readSheet(sn.supply)
+supply = sheetReader.renameDataframeColumns(supply, 'supply')
+print(supply)
+
+df = analyst.allocateSpendings(opEx=opEx, supply=supply)
+print(df)
+sheetWriter.writeToSheet(sn.result, df)
+
+df = analyst.countTotalProductCost(df)
+print(df)
+print(list(df.columns.values))
+sheetWriter.writeToSheet(sn.total_product_cost, df)

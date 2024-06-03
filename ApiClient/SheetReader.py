@@ -1,5 +1,6 @@
 import pandas as pd
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
+import ColumnMapping as cmap
 
 
 class SheetReader():
@@ -14,10 +15,13 @@ class SheetReader():
 
         return dataframe
 
-    def readSheet_test(self, sheet_name: str) -> pd.DataFrame:
-        worksheet = self.sh.worksheet(sheet_name)
+    def readSheet_test(self, sheet_nm: str) -> pd.DataFrame:
+        worksheet = self.sh.worksheet(sheet_nm)
 
         dataframe = get_as_dataframe(
             worksheet, usecols=[0, 1, 2], skip_blank_lines=True).dropna()
 
         return dataframe
+
+    def renameDataframeColumns(self, df: pd.DataFrame, sheet_nm: str):
+        return df.rename(columns=cmap.ColumnMapping[sheet_nm])
