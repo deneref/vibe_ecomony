@@ -5,6 +5,9 @@ from ApiClient.SheetWriter import SheetWriter
 import SheetNames
 from ApiClient.ApiService import ApiService
 import CoreAnalyst as ca
+import Visualiser as vision
+
+import pandas as pd
 
 
 ApiService = ApiService()
@@ -17,20 +20,33 @@ sheetWriter = SheetWriter(
 
 sn = SheetNames.SheetNames
 analyst = ca.CoreAnalyst()
+vision = vision.Visualiser()
+
 
 opEx = sheetReader.readSheet(sn.opEx)
 opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
-print(opEx)
+# print(opEx)
+
+supply = sheetReader.readSheet(sn.supply)
+supply = sheetReader.renameDataframeColumns(supply, 'supply')
+# print(supply)
+
+df = analyst.allocateSpendings(opEx=opEx, supply=supply)
+df = analyst.pivot_category(df)
+print(df)
+sheetWriter.writeToSheet(sn.allocatedSpending, df, True)
+
+vision.visualize_category_distribution(df)
+
+'''
+sales = sheetReader.readSheet(sn.sales)
+sales = sheetReader.renameDataframeColumns(sales, 'sales')
+print(sales)
 
 supply = sheetReader.readSheet(sn.supply)
 supply = sheetReader.renameDataframeColumns(supply, 'supply')
 print(supply)
 
-df = analyst.allocateSpendings(opEx=opEx, supply=supply)
+df = analyst.countRemains(sales, supply)
 print(df)
-sheetWriter.writeToSheet(sn.result, df)
-
-df = analyst.countTotalProductCost(df)
-print(df)
-print(list(df.columns.values))
-sheetWriter.writeToSheet(sn.total_product_cost, df)
+'''

@@ -25,5 +25,22 @@ ColumnMapping = {
     },
     'result': {
 
+    },
+    'remains': {
+        'Номер поставки': 'supply_id',
+        'Продукт': 'product_nm',
+        'Едениц': 'supply_amt'
+    },
+    'sales': {
+        'Номер поставки': 'supply_id',
+        'Продукт': 'product_nm',
+        'Канал': 'channel',
+        'Стоимость': 'item_amt'
+    },
+    'marketing':
+    {
+        'Номер кампании': 'campany_id',
+        'Канал': 'channel',
+        'Сумма': 'item_amt'
     }
 }

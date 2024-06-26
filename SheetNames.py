@@ -9,3 +9,6 @@ class SheetNames(StrEnum):
     investments = 'Источники инвестирования'
     result = 'final'  # тестовый sheet
     total_product_cost = 'total_product_cost'  # тестовый
+    remains = 'Остатки'
+    sales = 'Факты продаж'
+    marketing = 'Маркетинговые кампании'
