@@ -114,3 +114,23 @@ class TestingScenarios:
         df = analyst.calculate_roi(opEx, sales, supply)
 
         vision.visualize_roi(df)
+
+    def test_visualise_income_by_product(self):
+        sheetReader, sn, analyst, vision = self.sheetReader, self.sn, self.analyst, self.vision
+
+        opEx = sheetReader.readSheet(sn.opEx)
+        opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
+        # print(opEx)
+
+        supply = sheetReader.readSheet(sn.supply)
+        supply = sheetReader.renameDataframeColumns(supply, 'supply')
+        # print(supply)
+
+        allocated = analyst.allocateSpendings(opEx=opEx, supply=supply)
+
+        sales = sheetReader.readSheet(sn.sales)
+        sales = sheetReader.renameDataframeColumns(sales, 'sales')
+
+        df = analyst.calculate_income_by_product(sales, allocated)
+
+        vision.visualize_income_by_product(df)

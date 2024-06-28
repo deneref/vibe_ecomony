@@ -137,3 +137,21 @@ class CoreAnalyst():
             [float('inf'), - float('inf'), pd.NA], 0, inplace=True)
 
         return merged_data
+
+    def calculate_income_by_product(self, sales: pd.DataFrame, allocated: pd.DataFrame) -> pd.DataFrame:
+        # Ensure date columns in sales_df are in datetime format
+        sales['sale_date'] = pd.to_datetime(sales['sale_date'])
+
+        # Group by product_nm to sum up the total income for each product
+        total_income_by_product = sales.groupby('product_nm')['item_amt'].sum(
+        ).reset_index().rename(columns={'item_amt': 'total_income'})
+
+        # Merge with cost_df to maintain the product list and include total_item_cost - though it's not strictly needed for this specific request
+        merged_data = pd.merge(allocated[[
+                               'product_nm']], total_income_by_product, on='product_nm', how='left').fillna(0)
+
+        # Sort products by total_income for better visualization (optional)
+        merged_data = merged_data.sort_values(
+            by='total_income', ascending=False)
+
+        return merged_data
