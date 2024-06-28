@@ -2,13 +2,12 @@ from pprint import pprint
 
 from ApiClient.SheetReader import SheetReader
 from ApiClient.SheetWriter import SheetWriter
-import SheetNames
+import SheetTuning.SheetNames as SheetNames
 from ApiClient.ApiService import ApiService
-import CoreAnalyst as ca
-import Visualiser as vision
+import Analyst.CoreAnalyst as ca
+import Analyst.Visualiser as vision
 
-import pandas as pd
-
+import TestingScenarios as test
 
 ApiService = ApiService()
 
@@ -22,31 +21,10 @@ sn = SheetNames.SheetNames
 analyst = ca.CoreAnalyst()
 vision = vision.Visualiser()
 
+test = test.TestingScenarios(
+    sheetWriter=sheetWriter, sheetReader=sheetReader, sn=sn, analyst=analyst, vision=vision)
 
-opEx = sheetReader.readSheet(sn.opEx)
-opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
-# print(opEx)
+# test.test_countMarketing()
 
-supply = sheetReader.readSheet(sn.supply)
-supply = sheetReader.renameDataframeColumns(supply, 'supply')
-# print(supply)
-
-df = analyst.allocateSpendings(opEx=opEx, supply=supply)
-df = analyst.pivot_category(df)
-print(df)
-sheetWriter.writeToSheet(sn.allocatedSpending, df, True)
-
-vision.visualize_category_distribution(df)
-
-'''
-sales = sheetReader.readSheet(sn.sales)
-sales = sheetReader.renameDataframeColumns(sales, 'sales')
-print(sales)
-
-supply = sheetReader.readSheet(sn.supply)
-supply = sheetReader.renameDataframeColumns(supply, 'supply')
-print(supply)
-
-df = analyst.countRemains(sales, supply)
-print(df)
-'''
+# test.test_count_roi()
+test.test_visualise_roi()

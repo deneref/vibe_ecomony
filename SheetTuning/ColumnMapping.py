@@ -35,12 +35,17 @@ ColumnMapping = {
         'Номер поставки': 'supply_id',
         'Продукт': 'product_nm',
         'Канал': 'channel',
-        'Стоимость': 'item_amt'
+        'Стоимость': 'item_amt',
+        'Дата': 'sale_date'
     },
     'marketing':
     {
         'Номер кампании': 'campany_id',
         'Канал': 'channel',
-        'Сумма': 'item_amt'
+        'Сумма': 'item_amt',
+        'Продукт': 'product_nm',
+        'Номер маркетинговой кампании': 'campany_id',
+        'Дата начала': 'start_dt',
+        'Дата окончания': 'end_dt'
     }
 }
