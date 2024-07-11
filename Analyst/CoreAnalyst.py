@@ -8,7 +8,6 @@ class CoreAnalyst():
     def allocateSpendings(self, opEx: pd.DataFrame, supply: pd.DataFrame) -> pd.DataFrame:
         opEx = opEx.groupby(['supply_id', 'category'], as_index=False)[
             'item_amt'].sum()
-        print(opEx)
 
         supply['total_supply_amt'] = supply.groupby(
             'supply_id')['supply_amt'].transform('sum')

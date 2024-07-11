@@ -1,5 +1,6 @@
 import telebot
 from AnalystApp import AnalystApp
+from bot.KeaboardManager import KeaboardManager
 
 
 class YourBot():
@@ -10,6 +11,7 @@ class YourBot():
 
         self.bot = telebot.TeleBot(apikey)
         self.analystApp = AnalystApp()
+        self.keyboardsManager = KeaboardManager()
         self.privacy = False
 
     def check_entry_id(self, message) -> bool:
@@ -22,18 +24,36 @@ class YourBot():
 
         return True
 
+    def send_main_menu_board(self, id):
+        self.bot.send_message(id, "Опции:",
+                              reply_markup=self.keyboardsManager.guestMainOptionsKeyboard())
+
     def startBot(self):
         bot, analystApp = self.bot, self.analystApp
 
         @bot.message_handler(commands=["start"])
         def handle_start(message):
             frendly_id = self.check_entry_id(message)
+            user_id = message.from_user.id
             if not self.privacy:
                 if not frendly_id:
-                    bot.send_message(message.from_user.id, "id записан")
+                    bot.send_message(user_id, "id записан")
+
+                self.send_main_menu_board(user_id)
             else:
                 if not frendly_id:
-                    bot.send_message(message.from_user.id, "сюда нельзя")
+                    bot.send_message(user_id, "сюда нельзя")
+                else:
+                    self.send_main_menu_board(user_id)
+
+        @bot.message_handler(func=lambda message: message.text == 'Аналитика',
+                             content_types=['text'])
+        def handle_analysis(message):
+            print('Получил команду Аналитика')
+            graphs = self.analystApp.getAllGraphs()
+            for graph in graphs:
+                bot.send_photo(message.chat.id, graph,
+                               caption='график')
 
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()

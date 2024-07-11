@@ -1,24 +1,37 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import io
+from PIL import Image
 
 
 class Visualiser():
     def __init__(self):
         pass
 
-    def visualize_category_distribution(self, df: pd.DataFrame):
+    def fig2img(self, fig):
+        buf = io.BytesIO()
+        fig.savefig(buf)
+        buf.seek(0)
+        img = Image.open(buf)
+        return img
+
+    def visualize_category_distribution(self, allocated: pd.DataFrame, return_image=False):
+        if return_image:
+            plt.switch_backend('Agg')
+
         # Ensure that the dataframe has the required structure
-        if 'product_nm' not in df.columns or 'total_item_cost' not in df.columns:
+        if 'product_nm' not in allocated.columns or 'total_item_cost' not in allocated.columns:
             raise ValueError(
                 "DataFrame must contain 'product_nm' and 'total_item_cost' columns")
 
-        df.set_index('product_nm', inplace=True)
+        allocated.set_index('product_nm', inplace=True)
         # Calculate the percentage for each category
-        categories = [col for col in df.columns if col not in [
+        categories = [col for col in allocated.columns if col not in [
             'product_nm', 'total_item_cost']]
-        df_categories = df[categories]
-        df_percentage = df_categories.div(df['total_item_cost'], axis=0) * 100
+        df_categories = allocated[categories]
+        df_percentage = df_categories.div(
+            allocated['total_item_cost'], axis=0) * 100
 
         # Plotting
         ax = df_percentage.plot(kind='bar', stacked=True,
@@ -39,12 +52,20 @@ class Visualiser():
             ax.annotate(f'{height:.1f}%', (x + width / 2, y + height / 2),
                         ha='center', va='center', fontsize=9, color='white', weight='bold')
 
-        ax.set_xticklabels(df.index, rotation=0)
+        ax.set_xticklabels(allocated.index, rotation=0)
         # Show the plot
-        plt.tight_layout()
-        plt.show()
 
-    def visualize_roi(self, roi: pd.DataFrame):
+        if not return_image:
+            plt.tight_layout()
+            plt.show()
+        else:
+            fig = plt.gcf()
+            return self.fig2img(fig)
+
+    def visualize_roi(self, roi: pd.DataFrame, return_image=False):
+        if return_image:
+            plt.switch_backend('Agg')
+
         # Visualization: Total Spend vs Total Gain vs Expected Return vs Expected Gain
         plt.figure(figsize=(14, 7))
         bar_width = 0.2  # Width of the bars
@@ -90,10 +111,17 @@ class Visualiser():
             plt.text(r4[i], roi['expected_gain'][i] + 0.05 * roi['expected_gain'][i],
                      f'{roi["expected_gain"][i]:.2f}', ha='center', va='bottom')
 
-        # Display the plot
-        plt.show()
+        if not return_image:
+            plt.tight_layout()
+            plt.show()
+        else:
+            fig = plt.gcf()
+            return self.fig2img(fig)
 
-    def visualize_income_by_product(self, income: pd.DataFrame):
+    def visualize_income_by_product(self, income: pd.DataFrame, return_image=False):
+        if return_image:
+            plt.switch_backend('Agg')
+
         plt.figure(figsize=(12, 6))
 
         # Generate a list of colors for each bar
@@ -114,6 +142,9 @@ class Visualiser():
             plt.text(bar.get_x() + bar.get_width()/2, yval + 0.02 * income['total_income'].max(),
                      f'{yval:.2f}', ha='center', va='bottom', fontsize=8, rotation=0)
 
-        # Display the plot
-        plt.tight_layout()
-        plt.show()
+        if not return_image:
+            plt.tight_layout()
+            plt.show()
+        else:
+            fig = plt.gcf()
+            return self.fig2img(fig)

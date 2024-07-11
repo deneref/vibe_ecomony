@@ -57,7 +57,7 @@ class TestingScenarios:
         vision.visualize_category_distribution(df)
 
     def test_visualiseAllocation(self):
-        sheetReader, sn, analyst = self.sheetReader, self.sn, self.analyst
+        sheetReader, sn, analyst, vision = self.sheetReader, self.sn, self.analyst, self.vision
 
         opEx = sheetReader.readSheet(sn.opEx)
         opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
@@ -70,7 +70,7 @@ class TestingScenarios:
         df = analyst.allocateSpendings(opEx=opEx, supply=supply)
         df = analyst.pivot_category(df)
         print(df)
-        self.sheetWriter.writeToSheet(sn.allocatedSpending, df, True)
+        # self.sheetWriter.writeToSheet(sn.allocatedSpending, df, True)
 
         vision.visualize_category_distribution(df)
 
