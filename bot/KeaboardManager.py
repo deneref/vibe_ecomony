@@ -6,7 +6,8 @@ class KeaboardManager():
 
     def guestMainOptionsKeyboard(self):
         keyboard = telebot.types.ReplyKeyboardMarkup(True, True)
-        keyboard.row("Аналитика")
-        keyboard.row("Что-то еще")
+        keyboard.row("Графики")
+        keyboard.row("Средняя прибыль по продукту")
+        keyboard.row("Текст")
 
         return keyboard

@@ -46,14 +46,20 @@ class YourBot():
                 else:
                     self.send_main_menu_board(user_id)
 
-        @bot.message_handler(func=lambda message: message.text == 'Аналитика',
+        @bot.message_handler(func=lambda message: message.text == 'Графики',
                              content_types=['text'])
         def handle_analysis(message):
-            print('Получил команду Аналитика')
+            print('Получил команду Графики')
             graphs = self.analystApp.getAllGraphs()
             for graph in graphs:
                 bot.send_photo(message.chat.id, graph,
                                caption='график')
+
+        @bot.message_handler(func=lambda message: message.text == 'Средняя прибыль по продукту', content_types=['text'])
+        def handle_avg_by_product(message):
+            print('получил команду средннее')
+            avg = self.analystApp.get_avg_by_product()
+            bot.send_message(message.chat.id, avg)
 
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()
