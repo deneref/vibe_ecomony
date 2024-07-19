@@ -70,7 +70,10 @@ class AnalystApp():
         return images_array
 
     def run_test(self, test_name: str):
+        print("запускаем test")
         if test_name == 'test_visualiseAllocation':
             self.test.test_visualiseAllocation()
         elif test_name == 'test_visualise_roi':
             self.test.test_visualise_roi()
+        elif test_name == 'test_get_avg_value_by_product':
+            self.test.test_get_avg_value_by_product()

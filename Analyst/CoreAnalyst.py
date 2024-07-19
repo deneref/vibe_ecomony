@@ -154,3 +154,23 @@ class CoreAnalyst():
             by='total_income', ascending=False)
 
         return merged_data
+
+    def get_avg_value_by_product(self, sales: pd.DataFrame, allocated: pd.DataFrame) -> pd.DataFrame:
+        '''
+        Расчет средней чистой прибыли, которую принес продукт
+        '''
+        allocated = allocated[['product_nm', 'total_item_cost']]
+        # Merge the two DataFrames on 'supply_id' and 'product_nm'
+        merged_df = pd.merge(sales, allocated, on=['product_nm'])
+
+        print(merged_df)
+
+        # Calculate the net income for each sale
+        merged_df['net_income'] = merged_df['item_amt'] - \
+            merged_df['total_item_cost']
+
+        # Calculate the average net income per product for returning
+        avg_net_income_per_product = merged_df.groupby(
+            'product_nm')['net_income'].mean().reset_index()
+
+        return avg_net_income_per_product

@@ -134,3 +134,28 @@ class TestingScenarios:
         df = analyst.calculate_income_by_product(sales, allocated)
 
         vision.visualize_income_by_product(df)
+
+    def test_get_avg_value_by_product(self):
+        sheetReader, sn, analyst, vision = self.sheetReader, self.sn, self.analyst, self.vision
+
+        print('читаем затраты')
+        opEx = sheetReader.readSheet(sn.opEx)
+        opEx = sheetReader.renameDataframeColumns(opEx, 'opEx')
+        # print(opEx)
+
+        print('читаем supply')
+        supply = sheetReader.readSheet(sn.supply)
+        supply = sheetReader.renameDataframeColumns(supply, 'supply')
+        # print(supply)
+
+        print('считаем allocated')
+        allocated = analyst.allocateSpendings(opEx=opEx, supply=supply)
+        allocated = analyst.pivot_category(allocated)
+
+        sales = sheetReader.readSheet(sn.sales)
+        sales = sheetReader.renameDataframeColumns(sales, 'sales')
+
+        print('считаем avg')
+        df = analyst.get_avg_value_by_product(sales, allocated)
+
+        print(df)
