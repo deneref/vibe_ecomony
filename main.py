@@ -6,6 +6,8 @@ from bot.YourBot import YourBot
 import TestingScenarios as test
 
 # analystApp = AnalystApp()
+# analystApp.run_test('test_calculate_roi')
+
 
 yourBot = YourBot()
 yourBot.startBot()

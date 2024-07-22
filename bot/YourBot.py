@@ -57,9 +57,15 @@ class YourBot():
 
         @bot.message_handler(func=lambda message: message.text == 'Средняя прибыль по продукту', content_types=['text'])
         def handle_avg_by_product(message):
-            print('получил команду средннее')
+            print('Получил команду средннее')
             avg = self.analystApp.get_avg_by_product()
             bot.send_message(message.chat.id, avg)
+
+        @bot.message_handler(func=lambda message: message.text == 'ROI breakdown', content_types=['text'])
+        def handle_avg_by_product(message):
+            print('ROI breakdown')
+            roi = self.analystApp.get_roi_breakdown()
+            bot.send_message(message.chat.id, roi)
 
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()

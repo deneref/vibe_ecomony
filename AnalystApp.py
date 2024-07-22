@@ -58,7 +58,7 @@ class AnalystApp():
         if not self.capEx is None:
             return self.capEx
         else:
-            self.capEx = self.sheetReader.readSheet(sn.capEx)
+            self.capEx = self.sheetReader.readSheet(self.sn.capEx)
             self.capEx = self.sheetReader.renameDataframeColumns(
                 self.capEx, 'capEx')
 
@@ -148,11 +148,24 @@ class AnalystApp():
         print('считаем images')
         return images_array
 
-    def get_avg_by_product(self):
+    def get_avg_by_product(self) -> str:
         result = self.analyst.get_avg_value_by_product(
             self.get_sales(), self.get_pivoted_allocated())
 
         return result.to_string()
+
+    def get_roi_breakdown(self) -> str:
+        roi_result = self.analyst.calculate_roi(
+            self.get_opEx(), self.get_sales(), self.get_supply())
+
+        result_string = '*Средняя цена*: \n {avg_product_price} \n\n *Осталось продать до выхода в ноль*: \n {avg_products_left_to_breakeven}'.format(
+            avg_product_price=roi_result[[
+                'supply_id', 'avg_product_price']].to_string(index=False),
+            avg_products_left_to_breakeven=roi_result[[
+                'supply_id', 'avg_products_left_to_breakeven']].to_string(index=False)
+        )
+
+        return result_string
 
     def run_test(self, test_name: str):
         print("запускаем test")
@@ -162,3 +175,5 @@ class AnalystApp():
             self.test.test_visualise_roi()
         elif test_name == 'test_get_avg_value_by_product':
             self.test.test_get_avg_value_by_product()
+        elif test_name == 'test_calculate_roi':
+            self.test.test_count_roi()

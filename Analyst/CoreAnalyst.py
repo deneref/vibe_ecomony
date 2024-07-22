@@ -158,7 +158,10 @@ class CoreAnalyst():
     def get_avg_value_by_product(self, sales: pd.DataFrame, pivoted_allocated: pd.DataFrame) -> pd.DataFrame:
         '''
         Расчет средней чистой прибыли, которую принес продукт
+
+        DF: product_nm  net_income
         '''
+        # print(sales, pivoted_allocated)
         allocated = pivoted_allocated[['product_nm', 'total_item_cost']]
         # Merge the two DataFrames on 'supply_id' and 'product_nm'
         merged_df = pd.merge(sales, allocated, on=['product_nm'])
