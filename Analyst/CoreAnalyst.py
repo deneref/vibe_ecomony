@@ -94,6 +94,8 @@ class CoreAnalyst():
         # Ensure date columns are in datetime format
         sales['sale_date'] = pd.to_datetime(sales['sale_date'])
 
+        # TODO: тут надо перейти на pivoted_allocated
+
         # Calculate total expenses by supply_id
         total_expenses = opEx.groupby('supply_id')['item_amt'].sum(
         ).reset_index().rename(columns={'item_amt': 'total_expenditures'})

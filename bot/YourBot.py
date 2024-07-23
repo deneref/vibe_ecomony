@@ -67,6 +67,14 @@ class YourBot():
             roi = self.analystApp.get_roi_breakdown()
             bot.send_message(message.chat.id, roi)
 
+        @bot.message_handler(func=lambda message: message.text == 'Графики документом', content_types=['text'])
+        def handle_avg_by_product(message):
+            print('Графики документом')
+            graphs = self.analystApp.getAllGraphs()
+            for graph in graphs:
+                bot.send_document(message.chat.id, document=graph,
+                                  caption='график')
+
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()
 

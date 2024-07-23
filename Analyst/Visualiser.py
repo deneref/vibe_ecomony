@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 from PIL import Image
+from io import BytesIO
 
 
 class Visualiser():
@@ -11,9 +12,11 @@ class Visualiser():
 
     def fig2img(self, fig):
         buf = io.BytesIO()
-        fig.savefig(buf)
+        fig.savefig(buf, bbox_inches='tight')
         buf.seek(0)
+
         img = Image.open(buf)
+
         return img
 
     def visualize_category_distribution(self, allocated: pd.DataFrame, return_image=False):
@@ -61,6 +64,12 @@ class Visualiser():
         else:
             fig = plt.gcf()
             return self.fig2img(fig)
+            # bio = BytesIO()
+            # bio.name = 'image.jpeg'
+            # imgBase = Image.new('RGB', (1200, 700))
+            # imgBase.save(bio, 'JPEG')
+            # bio.seek(0)
+            # return imgBase
 
     def visualize_roi(self, roi: pd.DataFrame, return_image=False):
         if return_image:
