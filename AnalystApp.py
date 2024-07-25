@@ -199,6 +199,22 @@ class AnalystApp():
 
         return result_string
 
+    def get_forcast_image(self):
+        analyst, vision = self.analyst, self.vision
+
+        print('читаем sales')
+        sales = self.get_sales()
+
+        m, f = analyst.forecats(sales)
+
+        images_array = []
+
+        images_array.append(
+            vision.visualize_forecast(m, f, True))
+
+        print('считаем images')
+        return images_array
+
     def run_test(self, test_name: str):
         print("запускаем test")
         if test_name == 'test_visualiseAllocation':
@@ -211,3 +227,5 @@ class AnalystApp():
             self.test.test_count_roi()
         elif test_name == 'test_visialize_forecast':
             self.test.test_visialize_forecast()
+        elif test_name == 'test_forecats_metrics':
+            self.test.forecats_metrics()

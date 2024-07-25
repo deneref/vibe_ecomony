@@ -81,6 +81,14 @@ class YourBot():
             self.analystApp.update_pivoted_allocated_sheet()
             bot.send_message(message.chat.id, text='Таблица обновлена')
 
+        @bot.message_handler(func=lambda message: message.text == 'Forecast', content_types=['text'])
+        def update_allocated_spending_sheet(message):
+            print('Forecast')
+            graphs = self.analystApp.get_forcast_image()
+            for graph in graphs:
+                bot.send_photo(message.chat.id, graph,
+                               caption='Предсказание о прибыли на основе данных по продажам с листа Факты продаж')
+
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()
 

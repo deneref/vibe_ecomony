@@ -158,9 +158,17 @@ class Visualiser():
             fig = plt.gcf()
             return self.fig2img(fig)
 
-    def visualize_forecast(self, model, forecast: pd.DataFrame):
+    def visualize_forecast(self, model, forecast: pd.DataFrame, return_image=False):
+        if return_image:
+            plt.switch_backend('Agg')
+
         fig = model.plot(forecast)
         plt.title('Sales Forecast')
         plt.xlabel('Date')
         plt.ylabel('Sales')
-        plt.show()
+
+        if not return_image:
+            plt.show()
+        else:
+            fig = plt.gcf()
+            return self.fig2img(fig)

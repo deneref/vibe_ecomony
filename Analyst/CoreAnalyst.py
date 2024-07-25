@@ -1,6 +1,9 @@
 import pandas as pd
 from prophet import Prophet
 
+from prophet.diagnostics import cross_validation, performance_metrics
+from prophet.plot import plot_cross_validation_metric
+
 
 class CoreAnalyst():
     def __init__(self):
@@ -222,3 +225,16 @@ class CoreAnalyst():
         forecast = model.predict(future_dates)
 
         return model, forecast
+
+    def forecats_metrics(self, model):
+        # Perform cross-validation
+        df_cv = cross_validation(
+            model, initial='20 days', period='4 days', horizon='6 days')
+
+        # Calculate performance metrics
+        df_p = performance_metrics(df_cv)
+        print(df_p.head())
+
+        # Plot cross-validation metrics
+        fig2 = plot_cross_validation_metric(df_cv, metric='mape')
+        fig2.show()

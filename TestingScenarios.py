@@ -168,3 +168,12 @@ class TestingScenarios:
 
         m, f = analyst.forecats(sales)
         vision.visualize_forecast(m, f)
+
+    def forecats_metrics(self):
+        sheetReader, sn, analyst, vision = self.sheetReader, self.sn, self.analyst, self.vision
+
+        sales = sheetReader.readSheet(sn.sales)
+        sales = sheetReader.renameDataframeColumns(sales, 'sales')
+
+        m, f = analyst.forecats(sales)
+        analyst.forecats_metrics(m)
