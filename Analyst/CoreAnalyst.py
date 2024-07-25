@@ -1,8 +1,17 @@
 import pandas as pd
+from prophet import Prophet
 
 
 class CoreAnalyst():
     def __init__(self):
+        '''
+        sales:
+            - 'supply_id'
+            - 'product_nm'
+            - 'channel'
+            - 'item_amt'
+            - 'sale_date'
+        '''
         pass
 
     def allocateSpendings(self, opEx: pd.DataFrame, supply: pd.DataFrame) -> pd.DataFrame:
@@ -179,3 +188,37 @@ class CoreAnalyst():
             'product_nm')['net_income'].mean().reset_index()
 
         return avg_net_income_per_product
+
+    def forecats(self, sales) -> pd.DataFrame:
+        # Convert the date column to datetime
+        sales['sale_date'] = pd.to_datetime(sales['sale_date'])
+
+        # Aggregate the sales data by date
+        daily_sales = sales.groupby('sale_date')[
+            'item_amt'].sum().reset_index()
+
+        # Rename columns to be compatible with Prophet
+        daily_sales.columns = ['ds', 'y']
+
+        # Create additional features
+        daily_sales['day_of_week'] = daily_sales['ds'].dt.dayofweek
+        daily_sales['is_weekend'] = daily_sales['day_of_week'].apply(
+            lambda x: 1 if x >= 5 else 0)
+
+        # Initialize Prophet model
+        model = Prophet()
+        model.add_regressor('is_weekend')
+
+        # Fit the model with the data
+        model.fit(daily_sales)
+
+        # Create a dataframe with future dates
+        future_dates = model.make_future_dataframe(
+            periods=7)  # Predicting 7 days into the future
+        future_dates['is_weekend'] = future_dates['ds'].dt.dayofweek.apply(
+            lambda x: 1 if x >= 5 else 0)
+
+        # Make predictions
+        forecast = model.predict(future_dates)
+
+        return model, forecast

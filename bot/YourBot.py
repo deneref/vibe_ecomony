@@ -75,6 +75,12 @@ class YourBot():
                 bot.send_document(message.chat.id, document=graph,
                                   caption='график')
 
+        @bot.message_handler(func=lambda message: message.text == 'Update Sheet Аллоцированный расход', content_types=['text'])
+        def update_allocated_spending_sheet(message):
+            print('Update Sheet Аллоцированный расход')
+            self.analystApp.update_pivoted_allocated_sheet()
+            bot.send_message(message.chat.id, text='Таблица обновлена')
+
         bot.enable_save_next_step_handlers(delay=2)
         bot.load_next_step_handlers()
 

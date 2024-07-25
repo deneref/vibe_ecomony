@@ -148,11 +148,43 @@ class AnalystApp():
         print('считаем images')
         return images_array
 
+    def show_allGraphs(self):
+        analyst, vision = self.analyst, self.vision
+
+        print('читаем opEx')
+        opEx = self.get_opEx()
+
+        print('читаем supply')
+        supply = self.get_supply()
+
+        print('читаем sales')
+        sales = self.get_sales()
+
+        print('считаем allocated')
+        allocated = self.get_allocated()
+        pivoted_allocated = self.get_pivoted_allocated()
+
+        print('считаем roi')
+        roi = analyst.calculate_roi(opEx, sales, supply)
+        print('считаем income_by_product')
+        income_by_product = analyst.calculate_income_by_product(
+            sales, allocated)
+
+        vision.visualize_category_distribution(pivoted_allocated, False)
+
+        vision.visualize_roi(roi, False)
+
+        vision.visualize_income_by_product(income_by_product, False)
+
     def get_avg_by_product(self) -> str:
         result = self.analyst.get_avg_value_by_product(
             self.get_sales(), self.get_pivoted_allocated())
 
         return result.to_string()
+
+    def update_pivoted_allocated_sheet(self):
+        self.sheetWriter.writeToSheet(
+            self.sn.allocatedSpending, self.get_pivoted_allocated(), True)
 
     def get_roi_breakdown(self) -> str:
         roi_result = self.analyst.calculate_roi(
@@ -177,3 +209,5 @@ class AnalystApp():
             self.test.test_get_avg_value_by_product()
         elif test_name == 'test_calculate_roi':
             self.test.test_count_roi()
+        elif test_name == 'test_visialize_forecast':
+            self.test.test_visialize_forecast()

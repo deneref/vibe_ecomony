@@ -159,3 +159,12 @@ class TestingScenarios:
         df = analyst.get_avg_value_by_product(sales, allocated)
 
         print(df)
+
+    def test_visialize_forecast(self):
+        sheetReader, sn, analyst, vision = self.sheetReader, self.sn, self.analyst, self.vision
+
+        sales = sheetReader.readSheet(sn.sales)
+        sales = sheetReader.renameDataframeColumns(sales, 'sales')
+
+        m, f = analyst.forecats(sales)
+        vision.visualize_forecast(m, f)

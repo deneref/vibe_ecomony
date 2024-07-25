@@ -10,5 +10,6 @@ class KeaboardManager():
         keyboard.row("Графики документом")
         keyboard.row("Средняя прибыль по продукту")
         keyboard.row("ROI breakdown")
+        keyboard.row("Update Sheet Аллоцированный расход")
 
         return keyboard

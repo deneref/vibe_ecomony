@@ -157,3 +157,10 @@ class Visualiser():
         else:
             fig = plt.gcf()
             return self.fig2img(fig)
+
+    def visualize_forecast(self, model, forecast: pd.DataFrame):
+        fig = model.plot(forecast)
+        plt.title('Sales Forecast')
+        plt.xlabel('Date')
+        plt.ylabel('Sales')
+        plt.show()
