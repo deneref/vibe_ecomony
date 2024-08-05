@@ -4,6 +4,8 @@ from prophet import Prophet
 from prophet.diagnostics import cross_validation, performance_metrics
 from prophet.plot import plot_cross_validation_metric
 
+import os
+
 
 class CoreAnalyst():
     def __init__(self):
@@ -192,9 +194,48 @@ class CoreAnalyst():
 
         return avg_net_income_per_product
 
+    def get_russian_holidays(self) -> pd.DataFrame:
+        holidays = pd.DataFrame({
+            'holiday': ['National Unity Day', 'Constitution Day', 'Christmas Day', 'New Year\'s Eve'],
+            'ds': pd.to_datetime([
+                '2024-11-04',  # National Unity Day
+                '2024-12-12',  # Constitution Day
+                '2024-12-25',  # Christmas Day
+                '2024-12-31',  # New Year's Eve
+            ]),
+            'lower_window': 0,
+            'upper_window': 1
+        })
+
+        return holidays
+
+    def get_moscow_weather(self) -> pd.DataFrame:
+        '''
+        weather_data.csv
+        date,temperature,rainfall
+        '''
+
+        weather_df = pd.read_csv('weather.csv')
+        weather_df['date'] = pd.to_datetime(
+            weather_df['date'])
+
+        return weather_df
+
+    def get_future_moscow_weather(self) -> pd.DataFrame:
+        '''
+        future_weather.csv
+        date,temperature,rainfall
+        '''
+
+        weather_df = pd.read_csv('future_weather.csv')
+        weather_df['date'] = pd.to_datetime(weather_df['date'])
+
+        return weather_df
+
     def forecats(self, sales) -> pd.DataFrame:
         # Convert the date column to datetime
-        sales['sale_date'] = pd.to_datetime(sales['sale_date'])
+        sales['sale_date'] = pd.to_datetime(
+            sales['sale_date'])
 
         # Aggregate the sales data by date
         daily_sales = sales.groupby('sale_date')[
@@ -209,8 +250,18 @@ class CoreAnalyst():
             lambda x: 1 if x >= 5 else 0)
 
         # Initialize Prophet model
-        model = Prophet()
+        holidays = self.get_russian_holidays()
+        weather = self.get_moscow_weather()
+        weather.columns = ['ds', 'temperature', 'rainfall']
+
+        daily_sales = pd.merge(daily_sales, weather, on='ds', how='left')
+        daily_sales.fillna(0, inplace=True)
+
+        model = Prophet(holidays=holidays, yearly_seasonality=False,
+                        weekly_seasonality=True, daily_seasonality=False)
         model.add_regressor('is_weekend')
+        model.add_regressor('temperature')
+        model.add_regressor('rainfall')
 
         # Fit the model with the data
         model.fit(daily_sales)
@@ -221,8 +272,14 @@ class CoreAnalyst():
         future_dates['is_weekend'] = future_dates['ds'].dt.dayofweek.apply(
             lambda x: 1 if x >= 5 else 0)
 
+        future_weather = self.get_future_moscow_weather()
+        future_weather.columns = ['ds', 'temperature', 'rainfall']
+
+        future = pd.merge(future_dates, future_weather, on='ds', how='left')
+        future.fillna(0, inplace=True)
+
         # Make predictions
-        forecast = model.predict(future_dates)
+        forecast = model.predict(future)
 
         return model, forecast
 
